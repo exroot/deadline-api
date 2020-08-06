@@ -1,0 +1,54 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Program Files\Yarn\bin\yarn.js add compression cors dontev express express-rate-limit jsonwebtoken mysql2 reflect-metadata typeorm typescript yup
+
+PATH: 
+  C:\Users\exroot\bin;C:\Program Files\Git\mingw32\bin;C:\Program Files\Git\usr\local\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\mingw32\bin;C:\Program Files\Git\usr\bin;C:\Users\exroot\bin;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Program Files\Intel\WiFi\bin;C:\Program Files\Common Files\Intel\WirelessCommon;C:\Program Files\Intel\OpenCL SDK\2.0\bin\x86;C:\Program Files\Yarn\bin;C:\Program Files\Git\cmd;C:\Program Files\MySQL\MySQL Utilities 1.6;C:\ProgramData\ComposerSetup\bin;C:\ProgramData\chocolatey\bin;C:\Users\exroot\AppData\Roaming\nvm;C:\Program Files\nodejs;C:\Program Files\nodejs;C:\Users\exroot\AppData\Local\Programs\Python\Python37-32\Scripts;C:\Users\exroot\AppData\Local\Programs\Python\Python37-32;C:\Program Files\Intel\WiFi\bin;C:\Program Files\Common Files\Intel\WirelessCommon;C:\Users\exroot\AppData\Local\Yarn\bin;C:\Users\exroot\AppData\Local\Programs\Microsoft VS Code\bin;C:\mingw\bin;C:\Program Files\Transmission;C:\Program Files\MySQL\MySQL Notifier 1.1;C:\Program Files\MySQL\MySQL Server 5.5\bin;C:\Users\exroot\Downloads\Compressed\apache-ant-1.9.14-bin\apache-ant-1.9.14\bin;C:\Users\exroot\Downloads\curl-7.66.0_2-win32-mingw\curl-7.66.0-win32-mingw\bin;C:\Program Files\php-7.3.9-nts-Win32-VC15-x86;C:\Users\exroot\AppData\Roaming\Composer\vendor\bin;C:\Users\exroot\AppData\Roaming\nvm;C:\Program Files\nodejs;C:\Users\exroot\AppData\Roaming\npm;C:\Program Files\Git\usr\bin\vendor_perl;C:\Program Files\Git\usr\bin\core_perl
+
+Yarn version: 
+  1.17.3
+
+Node version: 
+  12.18.3
+
+Platform: 
+  win32 ia32
+
+Trace: 
+  Error: https://registry.yarnpkg.com/dontev: Not found
+      at Request.params.callback [as _callback] (C:\Program Files\Yarn\lib\cli.js:65939:18)
+      at Request.self.callback (C:\Program Files\Yarn\lib\cli.js:140464:22)
+      at Request.emit (events.js:315:20)
+      at Request.<anonymous> (C:\Program Files\Yarn\lib\cli.js:141436:10)
+      at Request.emit (events.js:315:20)
+      at IncomingMessage.<anonymous> (C:\Program Files\Yarn\lib\cli.js:141358:12)
+      at Object.onceWrapper (events.js:421:28)
+      at IncomingMessage.emit (events.js:327:22)
+      at endReadableNT (_stream_readable.js:1220:12)
+      at processTicksAndRejections (internal/process/task_queues.js:84:21)
+
+npm manifest: 
+  {
+    "name": "borderline-api",
+    "version": "0.0.1",
+    "description": "REST API for Borderline\u001b[D\u001b[D\u001b[C\u001b[C\u001b[C\u001b[C\u001b[\u001b[\u001b[\u001b[\u001b[\u001b[\u001b[\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[e",
+    "main": "src/index.ts",
+    "scripts": {
+      "test": "test"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/exroot/borderline-api.git"
+    },
+    "author": "exroot (Elias Torrealba)",
+    "license": "ISC",
+    "bugs": {
+      "url": "https://github.com/exroot/borderline-api/issues"
+    },
+    "homepage": "https://github.com/exroot/borderline-api#readme"
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
