@@ -1,5 +1,5 @@
 import { Repository } from "typeorm";
-import { injectable } from "inversify";
+import { injectable, unmanaged } from "inversify";
 
 export interface BaseServiceOptParam {
     useSoftDeletes: boolean;
@@ -9,7 +9,10 @@ export interface BaseServiceOptParam {
 export abstract class BaseService {
     protected readonly _repository: Repository<any>;
     protected readonly _useSoftDeletes: boolean;
-    constructor(repository: Repository<any>, opt?: BaseServiceOptParam) {
+    constructor(
+        repository: Repository<any>,
+        @unmanaged() opt?: BaseServiceOptParam
+    ) {
         this._repository = repository;
         this._useSoftDeletes = opt?.useSoftDeletes || false;
     }
