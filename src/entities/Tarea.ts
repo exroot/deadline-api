@@ -7,6 +7,7 @@ import {
     JoinColumn,
     ManyToMany,
     JoinTable,
+    DeleteDateColumn,
 } from "typeorm";
 import { Materia } from "./Materia";
 import { Profesor } from "./Profesor";
@@ -27,38 +28,41 @@ export class Tarea extends BaseEntity {
     @Column("text")
     descripcion: string;
 
-    @Column()
+    @Column({ type: "timestamp" })
     fecha_asignacion: Date;
 
-    @Column()
+    @Column({ type: "timestamp" })
     fecha_entrega: Date;
 
     @Column()
     fuente: string;
 
-    // Usuario
-    @ManyToOne((type) => Usuario, (usuario) => usuario.tareas)
-    @JoinColumn({ name: "usuario_id" })
-    usuario: Usuario;
-
-    @Column({ type: "int", nullable: true })
+    @Column({ type: "int" })
     usuario_id: number;
+
+    @Column({ type: "int" })
+    materia_id: number;
+
+    @Column({ type: "int" })
+    profesor_id: number;
+
+    @DeleteDateColumn()
+    deletedAt: Date;
+
+    // Usuario
+    @ManyToOne((type) => Usuario, (usuario) => usuario.tareasPublicadas)
+    @JoinColumn({ name: "usuario_id" })
+    autor: Usuario;
 
     // Materia
     @ManyToOne((type) => Materia, (materia) => materia.tareas)
     @JoinColumn({ name: "materia_id" })
     materia: Materia;
 
-    @Column({ type: "int", nullable: true })
-    materia_id: number;
-
     // Profesor
     @ManyToOne((type) => Profesor, (profesor) => profesor.tareas)
     @JoinColumn({ name: "profesor_id" })
     profesor: Profesor;
-
-    @Column({ type: "int", nullable: true })
-    profesor_id: number;
 
     // Categorias
     @ManyToMany((type) => Categoria, (categoria) => categoria.tareas)

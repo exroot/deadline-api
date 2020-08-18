@@ -4,6 +4,7 @@ import {
     Column,
     BaseEntity,
     ManyToMany,
+    DeleteDateColumn,
 } from "typeorm";
 import { Tarea } from "./Tarea";
 
@@ -12,11 +13,11 @@ export class Categoria extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ unique: true })
     categoria: string;
 
-    @Column()
-    deleted: boolean;
+    @DeleteDateColumn()
+    deletedAt: Date;
 
     @ManyToMany((type) => Tarea, (tarea) => tarea.categorias)
     tareas: Tarea[];

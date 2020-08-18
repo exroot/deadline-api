@@ -4,26 +4,20 @@ import {
     Column,
     BaseEntity,
     ManyToMany,
-    ManyToOne,
-    JoinColumn,
+    DeleteDateColumn,
 } from "typeorm";
 import { Rol } from "./Rol";
-import { Recurso } from "./Recurso";
 
 @Entity({ name: "permisos" })
 export class Permiso extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ unique: true })
     permiso: string;
 
-    @ManyToOne((type) => Recurso, (recurso) => recurso.permisos)
-    @JoinColumn({ name: "recurso_id" })
-    recurso: Recurso;
-
-    @Column({ type: "int", nullable: true })
-    recurso_id: number;
+    @DeleteDateColumn()
+    deletedAt: Date;
 
     @ManyToMany((type) => Rol, (rol) => rol.permisos)
     roles: Rol[];

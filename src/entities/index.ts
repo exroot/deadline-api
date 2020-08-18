@@ -11,7 +11,28 @@ import { Tarea } from "./Tarea";
 import { Usuario } from "./Usuario";
 
 export const entities = [
-    { entity: Usuario, typename: "UsuarioRepository" },
+    { entity: Bitacora, typename: "BitacoraRepository" },
     { entity: Carrera, typename: "CarreraRepository" },
+    { entity: Categoria, typename: "CategoriaRepository" },
+    { entity: Materia, typename: "MateriaRepository" },
+    { entity: Operacion, typename: "OperacionRepository" },
+    { entity: Permiso, typename: "PermisoRepository" },
+    { entity: Profesor, typename: "ProfesorRepository" },
+    { entity: Recurso, typename: "RecursoRepository" },
+    { entity: Rol, typename: "RolRepository" },
+    { entity: Tarea, typename: "TareaRepository" },
+    { entity: Usuario, typename: "UsuarioRepository" },
 ];
-export { Usuario, Carrera };
+export {
+    Bitacora,
+    Carrera,
+    Categoria,
+    Materia,
+    Operacion,
+    Permiso,
+    Profesor,
+    Recurso,
+    Rol,
+    Tarea,
+    Usuario,
+};

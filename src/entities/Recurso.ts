@@ -4,8 +4,8 @@ import {
     Column,
     BaseEntity,
     OneToMany,
+    DeleteDateColumn,
 } from "typeorm";
-import { Permiso } from "./Permiso";
 import { Bitacora } from "./Bitacora";
 
 @Entity({ name: "recursos" })
@@ -13,12 +13,12 @@ export class Recurso extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
-    recurso: string;
+    @Column({ unique: true })
+    nombre: string;
 
-    @OneToMany((type) => Permiso, (permiso) => permiso.recurso)
-    permisos: Permiso[];
+    @DeleteDateColumn()
+    deletedAt: Date;
 
-    @OneToMany((type) => Bitacora, (bitacora) => bitacora.usuario)
+    @OneToMany((type) => Bitacora, (bitacora) => bitacora.recurso)
     bitacoras: Bitacora[];
 }

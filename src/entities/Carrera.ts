@@ -4,6 +4,7 @@ import {
     Column,
     BaseEntity,
     OneToMany,
+    DeleteDateColumn,
 } from "typeorm";
 import { Materia } from "./Materia";
 import { Usuario } from "./Usuario";
@@ -13,8 +14,11 @@ export class Carrera extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ unique: true })
     carrera: string;
+
+    @DeleteDateColumn()
+    deletedAt: Date;
 
     @OneToMany((type) => Materia, (materia) => materia.carrera)
     materias: Materia[];

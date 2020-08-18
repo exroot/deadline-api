@@ -7,6 +7,7 @@ import {
     JoinColumn,
     ManyToMany,
     BaseEntity,
+    DeleteDateColumn,
 } from "typeorm";
 import { Carrera } from "./Carrera";
 import { Tarea } from "./Tarea";
@@ -17,22 +18,22 @@ export class Materia extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ unique: true })
     materia: string;
+
+    @Column({ type: "int" })
+    carrera_id: number;
+
+    @DeleteDateColumn()
+    deletedAt: Date;
 
     @ManyToOne((type) => Carrera, (carrera) => carrera.materias)
     @JoinColumn({ name: "carrera_id" })
     carrera: Carrera;
-
-    @Column({ type: "int", nullable: true })
-    carrera_id: number;
 
     @OneToMany((type) => Tarea, (tarea) => tarea.materia)
     tareas: Tarea[];
 
     @ManyToMany((type) => Profesor, (profesor) => profesor.materias)
     profesores: Profesor[];
-
-    @Column()
-    deleted: boolean;
 }

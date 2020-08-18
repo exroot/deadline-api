@@ -6,6 +6,7 @@ import {
     BaseEntity,
     ManyToMany,
     JoinTable,
+    DeleteDateColumn,
 } from "typeorm";
 import { Tarea } from "./Tarea";
 import { Materia } from "./Materia";
@@ -21,11 +22,14 @@ export class Profesor extends BaseEntity {
     @Column()
     imagen: string;
 
-    @Column()
+    @Column({ unique: true })
     email: string;
 
     @Column()
     numero: string;
+
+    @DeleteDateColumn()
+    deletedAt: Date;
 
     @OneToMany((type) => Tarea, (tarea) => tarea.profesor)
     tareas: Tarea[];

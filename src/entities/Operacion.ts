@@ -4,6 +4,7 @@ import {
     Column,
     BaseEntity,
     OneToMany,
+    DeleteDateColumn,
 } from "typeorm";
 import { Bitacora } from "./Bitacora";
 
@@ -12,8 +13,11 @@ export class Operacion extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ unique: true })
     operacion: string;
+
+    @DeleteDateColumn()
+    deletedAt: Date;
 
     @OneToMany((type) => Bitacora, (bitacora) => bitacora.usuario)
     bitacoras: Bitacora[];

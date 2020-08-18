@@ -6,6 +6,7 @@ import {
     OneToMany,
     ManyToMany,
     JoinTable,
+    DeleteDateColumn,
 } from "typeorm";
 import { Usuario } from "./Usuario";
 import { Permiso } from "./Permiso";
@@ -15,8 +16,11 @@ export class Rol extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ unique: true })
     rol: string;
+
+    @DeleteDateColumn()
+    deletedAt: Date;
 
     @OneToMany((type) => Usuario, (usuario) => usuario.rol)
     usuarios: Usuario[];
