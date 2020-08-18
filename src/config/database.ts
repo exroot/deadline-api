@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-export const DBConfig: ConnectionOptions = {
+const DBConfig: ConnectionOptions = {
     type: process.env.DB_CONNECTION as any,
     host: process.env.DB_HOST,
     port: Number(process.env.DB_PORT),
@@ -11,13 +11,15 @@ export const DBConfig: ConnectionOptions = {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     synchronize: true,
-    logging: true,
+    logging: false,
     entities: ["src/entities/**/*.ts"],
-    migrations: ["src/migration/**/*.ts"],
-    subscribers: ["src/subscriber/**/*.ts"],
+    migrations: ["src/migrations/**/*.ts"],
+    subscribers: ["src/subscribers/**/*.ts"],
     cli: {
         entitiesDir: "src/entities",
-        migrationsDir: "src/migration",
-        subscribersDir: "src/subscriber",
+        migrationsDir: "src/migrations",
+        subscribersDir: "src/subscribers",
     },
 };
+
+module.exports = DBConfig;
