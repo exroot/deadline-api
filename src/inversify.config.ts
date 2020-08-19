@@ -4,6 +4,8 @@ import { Repository, getRepository } from "typeorm";
 import { entities } from "./entities";
 import { customMiddlewares as middlewares } from "./middlewares";
 import { services } from "./services";
+import { Schema } from "yup";
+import { schemas } from "./constants/schemas";
 import { TYPE } from "./constants/types";
 import { getDbConnection } from "./db";
 
@@ -20,11 +22,25 @@ export const bindings = new AsyncContainerModule(async (bind) => {
             bind<BaseMiddleware>(TYPE[`${typename}`]).to(middleware);
         });
 
+        /* Registering validation schemas */
+        schemas.forEach(({ schema, typename }) => {
+            bind<Schema<any>>(TYPE[`${typename}`]).toConstantValue(schema);
+        });
+
         /* Registering controllers */
         console.log(`Registering controllers...`);
         await require("./controllers/auth.controller");
-        await require("./controllers/usuario.controller");
+        await require("./controllers/bitacora.controller");
         await require("./controllers/carrera.controller");
+        await require("./controllers/categoria.controller");
+        await require("./controllers/materia.controller");
+        await require("./controllers/operacion.controller");
+        await require("./controllers/permiso.controller");
+        await require("./controllers/profesor.controller");
+        await require("./controllers/recurso.controller");
+        await require("./controllers/rol.controller");
+        await require("./controllers/tarea.controller");
+        await require("./controllers/usuario.controller");
 
         /*******************************************************
          *    Registering services
