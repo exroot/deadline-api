@@ -9,13 +9,15 @@ export class Authenticated extends BaseMiddleware {
         const token = req.headers["authorization"];
         if (!token) {
             return res.status(400).json({
-                message: "Token must be sent",
+                code: "Bad request",
+                message: "No se ha encontrado el token de autenticación.",
             });
         }
         jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
             if (err) {
                 return res.status(401).json({
-                    message: "Invalid token",
+                    code: "Unauthorized",
+                    message: "Token inválido o expirado.",
                 });
             }
             next();
