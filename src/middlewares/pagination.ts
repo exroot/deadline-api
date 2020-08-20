@@ -7,7 +7,7 @@ export class PaginationMiddleware extends BaseMiddleware {
             req.query.limit = "10";
         }
         if (!req.query.page) {
-            req.query.page = "0";
+            req.query.page = "1";
         }
         if (!req.query.sortBy) {
             req.query.sortBy = "id";

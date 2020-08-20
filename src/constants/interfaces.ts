@@ -4,14 +4,14 @@
 export interface IBitacora {
     save(): Promise<IBitacora>;
     id?: number;
-    fecha?: Date;
-    recurso_id?: number;
+    timestamp?: Date;
+    data?: string;
     usuario_id?: number;
     operacion_id?: number;
-    entidad_id?: number;
+    recurso_id?: number;
     usuario?: IUsuario;
     operacion?: IOperacion;
-    entidad?: IEntidad;
+    recurso?: IRecurso;
 }
 
 export interface ICarrera {
@@ -27,7 +27,7 @@ export interface ICategoria {
     tareas?: ITarea[];
 }
 
-export interface IEntidad {
+export interface IRecurso {
     id?: number;
     nombre: string;
     permisos?: IPermiso[];
@@ -40,7 +40,7 @@ export interface IMateria {
     carrera_id?: number;
     carrera?: ICarrera;
     tareas?: ITarea[];
-    profesores?: IProfesor[];
+    profesores?: IProfesor[] | number[];
 }
 
 export interface IOperacion {
@@ -52,8 +52,8 @@ export interface IOperacion {
 export interface IPermiso {
     id?: number;
     permiso?: string;
-    entidad_id?: number;
-    entidad?: IEntidad;
+    recurso_id?: number;
+    recurso?: IRecurso;
     roles?: IRol[];
 }
 
@@ -64,14 +64,14 @@ export interface IProfesor {
     email?: string;
     numero?: number;
     tareas?: ITarea[];
-    materias?: IMateria[];
+    materias?: IMateria[] | number[];
 }
 
 export interface IRol {
     id?: number;
     rol: string;
     usuarios?: IUsuario[];
-    permisos?: IPermiso[];
+    permisos?: IPermiso[] | number[];
 }
 
 export interface ITarea {
@@ -85,13 +85,14 @@ export interface ITarea {
     usuario_id?: number;
     materia_id?: number;
     profesor_id?: number;
-    usuario?: IUsuario;
+    autor?: IUsuario;
     materia?: IMateria;
     profesor?: IProfesor;
-    categorias?: ICategoria[];
+    categorias?: ICategoria[] | number[];
 }
 
 export interface IUsuario {
+    save(): Promise<IUsuario>;
     id?: number;
     username?: string;
     email?: string;
@@ -101,7 +102,7 @@ export interface IUsuario {
     rol_id?: number;
     carrera?: ICarrera;
     rol?: IRol;
-    tareas?: ITarea[];
+    tareasPublicadas?: ITarea[];
     bitacoras?: IBitacora[];
     comparePassword(password: string): boolean;
 }
@@ -109,7 +110,6 @@ export interface IUsuario {
 /*********************************
  *      Services interfaces      *
  *********************************/
-
 export interface IService {
     get(id: number): Promise<any>;
     getMany(
@@ -121,6 +121,7 @@ export interface IService {
     create(newData: any): Promise<any>;
     update(id: number, updatedData: any): Promise<any>;
     delete(id: number): Promise<any>;
+    existe(id: number): Promise<INotFoundResponse>;
 }
 
 export interface IAuthService extends IService {
@@ -132,13 +133,74 @@ export interface IAuthService extends IService {
     login(credentials: ICredentials): Promise<any>;
 }
 
-export interface ICarreraService extends IService {
-    carreraExist(carrera: string): Promise<boolean>;
+export interface IBitacoraService extends IService {
+    carreraStatus(carrera: string): Promise<any>;
+    getManyByUsuario(
+        usuarioId: number,
+        page: number,
+        limit: number,
+        sortBy: string,
+        orderBy: string
+    ): Promise<IBitacora[]>;
+    getManyByDate(
+        dates: Date[],
+        page: number,
+        limit: number,
+        sortBy: string,
+        orderBy: string
+    ): Promise<IBitacora[]>;
+    audit(
+        data: string,
+        usuarioId: number,
+        operacionId: number,
+        recursoId: number
+    ): Promise<IBitacora>;
 }
+
+export interface ICarreraService extends IService {
+    carreraStatus(carrera: string, id?: number): Promise<IConflictResponse>;
+}
+
+export interface ICategoriaService extends IService {
+    categoriaStatus(categoria: string, id?: number): Promise<IConflictResponse>;
+}
+
+export interface IRecursoService extends IService {
+    recursoStatus(recurso: string, id?: number): Promise<IConflictResponse>;
+    getByRecurso(recurso: string): Promise<IRecurso>;
+}
+
+export interface IMateriaService extends IService {
+    materiaStatus(materia: string, id?: number): Promise<IConflictResponse>;
+}
+
+export interface IOperacionService extends IService {
+    operacionStatus(operacion: string, id?: number): Promise<IConflictResponse>;
+    getByOperacion(operacion: string): Promise<IOperacion>;
+}
+
+export interface IPermisoService extends IService {
+    permisoStatus(permiso: string, id?: number): Promise<IConflictResponse>;
+}
+
+export interface IProfesorService extends IService {
+    profesorStatus(email: string, id?: number): Promise<IConflictResponse>;
+}
+
+export interface IRolService extends IService {
+    rolStatus(rol: string, id?: number): Promise<IConflictResponse>;
+}
+
+export interface ITareaService extends IService {}
 
 export interface IUsuarioService extends IService {
     usernameTaked(username: string): Promise<boolean>;
     emailUsed(email: string): Promise<boolean>;
+    usuarioStatus(
+        username: string,
+        email: string,
+        id?: number
+    ): Promise<IConflictUsuarioResponse>;
 }
 
 /*********************************
@@ -149,4 +211,28 @@ export interface ICredentials {
     username?: string;
     email?: string;
     password: string;
+}
+
+export interface IConflictUsuarioResponse {
+    username: any;
+    email: any;
+}
+
+export interface INotFoundResponse {
+    notFound: boolean;
+    notFoundData: any;
+}
+
+export interface IValidationResponse {
+    error: boolean;
+    errorData: any;
+}
+
+export interface IConflictResponse {
+    conflict: boolean;
+    conflictData: any;
+}
+
+export interface ISchema {
+    validate(data: any, validateOptions?: any): Promise<any>;
 }

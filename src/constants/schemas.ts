@@ -26,7 +26,7 @@ export const RecursoSchema = yup.object().shape({
 
 export const MateriaSchema = yup.object().shape({
     id: yup.number().integer().positive().optional(),
-    materia: yup.string().optional(),
+    materia: yup.string().required("El campo es obligatorio."),
     carrera_id: yup.number().integer().positive().optional(),
 });
 
@@ -42,18 +42,22 @@ export const PermisoSchema = yup.object().shape({
 
 export const ProfesorSchema = yup.object().shape({
     id: yup.number().integer().positive().optional(),
-    nombre: yup.string().optional(),
+    nombre: yup.string().required("El campo es obligatorio."),
     imagen: yup
         .string()
         .url("El campo imagen necesita una URL válida.")
         .optional(),
-    email: yup.string().email("Email inválido, verifiquelo.").optional(),
-    numero: yup.string().optional(),
+    email: yup.string().email("Email inválido, verifiquelo.").required(),
+    numero: yup.string().required(),
 });
 
 export const RolSchema = yup.object().shape({
     id: yup.number().integer().positive().optional(),
-    rol: yup.string().optional(),
+    rol: yup
+        .string()
+        .min(4, "Rol muy corto.")
+        .max(30, "Rol muy largo")
+        .required(),
     permisos: yup
         .array()
         .of(yup.number().required("Los permisos seleccionados son inválidos."))
@@ -62,10 +66,10 @@ export const RolSchema = yup.object().shape({
 
 export const TareaSchema = yup.object().shape({
     id: yup.number().integer().positive().optional(),
-    titulo: yup.string().optional(),
-    ponderacion: yup.number().optional(),
-    descripcion: yup.string().optional(),
-    fecha_asignacion: yup.date().optional(),
+    titulo: yup.string().required(),
+    ponderacion: yup.number().required(),
+    descripcion: yup.string().required(),
+    fecha_asignacion: yup.date().required(),
     fecha_entrega: yup
         .date()
         .when("fecha_asignacion", (asignacion, schema) => {
@@ -74,30 +78,30 @@ export const TareaSchema = yup.object().shape({
                 "La fecha de entrega de la tarea no puede ser antes que la fecha cuando fue asignada."
             );
         })
-        .optional(),
-    fuente: yup.string().url().optional(),
+        .required(),
+    fuente: yup.string().url().required(),
     categorias: yup
         .array()
         .of(
             yup.number().required("Las categorias seleccionadas son inválidas.")
         )
         .optional(),
-    usuario_id: yup.number().integer().optional(),
-    materia_id: yup.number().integer().optional(),
-    profesor_id: yup.number().integer().optional(),
+    usuario_id: yup.number().integer().required(),
+    materia_id: yup.number().integer().required(),
+    profesor_id: yup.number().integer().required(),
 });
 
 export const UsuarioSchema = yup.object().shape({
     id: yup.number().integer().positive().optional(),
-    username: yup.string().optional(),
-    email: yup.string().email("Email inválido, verifiquelo.").optional(),
-    password: yup.string().optional(),
+    username: yup.string().required(),
+    email: yup.string().email("Email inválido, verifiquelo.").required(),
+    password: yup.string().required(),
     imagen: yup
         .string()
         .url("El campo imagen necesita una URL válida.")
         .optional(),
-    carrera_id: yup.number().integer().optional(),
-    rol_id: yup.number().integer().optional(),
+    carrera_id: yup.number().integer().required(),
+    rol_id: yup.number().integer().required(),
 });
 
 export const schemas = [

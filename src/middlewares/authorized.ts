@@ -1,35 +1,17 @@
 import { Request, Response, NextFunction } from "express";
 import { BaseMiddleware } from "inversify-express-utils";
-import { injectable } from "inversify";
+import { TYPE } from "../constants/types";
+import { inject } from "inversify";
 
-@injectable()
 export class Authorized extends BaseMiddleware {
-    private static operacionDict = {
-        GET: "Leer",
-        POST: "Crear",
-        PATCH: "Actualizar",
-        DELETE: "Eliminar",
-    };
-    private static recursoDict = {
-        bitacora: "bitacora",
-        carreras: "carrera",
-        categorias: "categoria",
-        materias: "materia",
-        operaciones: "operacion",
-        permisos: "permiso",
-        profesores: "profesor",
-        recursos: "recurso",
-        roles: "rol",
-        tareas: "tarea",
-        usuarios: "usuario",
-    };
+    @inject(TYPE.RouteParserHelper)
+    private readonly _extractData: Function;
     public async handler(req: Request, res: Response, next: NextFunction) {
-        const arrayPath = this.httpContext.request.path.split("/");
-        const operacion =
-            Authorized.operacionDict[this.httpContext.request.method];
-        const recurso = Authorized.recursoDict[arrayPath[1]];
+        const { operacionLabel, recursoLabel } = this._extractData(
+            this.httpContext.request
+        );
         const hasPermission = this.httpContext.user.details.permisos.includes(
-            `${operacion} ${recurso}`
+            `${operacionLabel} ${recursoLabel}`
         );
         if (
             hasPermission ||
