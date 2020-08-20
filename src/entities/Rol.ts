@@ -19,7 +19,7 @@ export class Rol extends BaseEntity {
     @Column({ unique: true })
     rol: string;
 
-    @DeleteDateColumn()
+    @DeleteDateColumn({ select: false })
     deletedAt: Date;
 
     @OneToMany((type) => Usuario, (usuario) => usuario.rol)

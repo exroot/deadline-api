@@ -46,7 +46,7 @@ export class Tarea extends BaseEntity {
     @Column({ type: "int" })
     profesor_id: number;
 
-    @DeleteDateColumn()
+    @DeleteDateColumn({ select: false })
     deletedAt: Date;
 
     // Usuario

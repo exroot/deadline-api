@@ -16,7 +16,7 @@ export class Recurso extends BaseEntity {
     @Column({ unique: true })
     nombre: string;
 
-    @DeleteDateColumn()
+    @DeleteDateColumn({ select: false })
     deletedAt: Date;
 
     @OneToMany((type) => Bitacora, (bitacora) => bitacora.recurso)

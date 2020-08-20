@@ -39,7 +39,7 @@ export class Usuario extends BaseEntity {
     @Column({ type: "int", default: 1 })
     rol_id: number;
 
-    @DeleteDateColumn()
+    @DeleteDateColumn({ select: false })
     deletedAt: Date;
 
     @OneToMany((type) => Tarea, (tarea) => tarea.autor)

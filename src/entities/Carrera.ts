@@ -17,7 +17,7 @@ export class Carrera extends BaseEntity {
     @Column({ unique: true })
     carrera: string;
 
-    @DeleteDateColumn()
+    @DeleteDateColumn({ select: false })
     deletedAt: Date;
 
     @OneToMany((type) => Materia, (materia) => materia.carrera)

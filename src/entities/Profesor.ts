@@ -28,7 +28,7 @@ export class Profesor extends BaseEntity {
     @Column()
     numero: string;
 
-    @DeleteDateColumn()
+    @DeleteDateColumn({ select: false })
     deletedAt: Date;
 
     @OneToMany((type) => Tarea, (tarea) => tarea.profesor)

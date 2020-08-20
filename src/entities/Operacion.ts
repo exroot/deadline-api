@@ -16,7 +16,7 @@ export class Operacion extends BaseEntity {
     @Column({ unique: true })
     operacion: string;
 
-    @DeleteDateColumn()
+    @DeleteDateColumn({ select: false })
     deletedAt: Date;
 
     @OneToMany((type) => Bitacora, (bitacora) => bitacora.usuario)

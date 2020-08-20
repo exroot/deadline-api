@@ -24,7 +24,7 @@ export class Materia extends BaseEntity {
     @Column({ type: "int" })
     carrera_id: number;
 
-    @DeleteDateColumn()
+    @DeleteDateColumn({ select: false })
     deletedAt: Date;
 
     @ManyToOne((type) => Carrera, (carrera) => carrera.materias)

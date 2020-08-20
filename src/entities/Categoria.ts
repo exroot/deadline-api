@@ -16,7 +16,7 @@ export class Categoria extends BaseEntity {
     @Column({ unique: true })
     categoria: string;
 
-    @DeleteDateColumn()
+    @DeleteDateColumn({ select: false })
     deletedAt: Date;
 
     @ManyToMany((type) => Tarea, (tarea) => tarea.categorias)

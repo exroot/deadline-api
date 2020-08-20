@@ -16,7 +16,7 @@ export class Permiso extends BaseEntity {
     @Column({ unique: true })
     permiso: string;
 
-    @DeleteDateColumn()
+    @DeleteDateColumn({ select: false })
     deletedAt: Date;
 
     @ManyToMany((type) => Rol, (rol) => rol.permisos)
