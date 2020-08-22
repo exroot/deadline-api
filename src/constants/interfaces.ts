@@ -52,9 +52,6 @@ export interface IOperacion {
 export interface IPermiso {
     id?: number;
     permiso?: string;
-    recurso_id?: number;
-    recurso?: IRecurso;
-    roles?: IRol[];
 }
 
 export interface IProfesor {
@@ -134,6 +131,10 @@ export interface IAuthService extends IService {
 }
 
 export interface IBitacoraService extends IService {
+    search(searchOptions: {
+        username: string;
+        email: string;
+    }): Promise<IBitacora[]>;
     carreraStatus(carrera: string): Promise<any>;
     getManyByUsuario(
         usuarioId: number,
@@ -158,42 +159,53 @@ export interface IBitacoraService extends IService {
 }
 
 export interface ICarreraService extends IService {
+    search(carrera: string): Promise<ICarrera[]>;
     carreraStatus(carrera: string, id?: number): Promise<IConflictResponse>;
 }
 
 export interface ICategoriaService extends IService {
+    search(categoria: string): Promise<ICategoria[]>;
     categoriaStatus(categoria: string, id?: number): Promise<IConflictResponse>;
 }
 
 export interface IRecursoService extends IService {
+    search(recurso: string): Promise<IRecurso[]>;
     recursoStatus(recurso: string, id?: number): Promise<IConflictResponse>;
     getByRecurso(recurso: string): Promise<IRecurso>;
 }
 
 export interface IMateriaService extends IService {
+    search(materia: string): Promise<IMateria[]>;
     materiaStatus(materia: string, id?: number): Promise<IConflictResponse>;
 }
 
 export interface IOperacionService extends IService {
+    search(operacion: string): Promise<IOperacion[]>;
     operacionStatus(operacion: string, id?: number): Promise<IConflictResponse>;
     getByOperacion(operacion: string): Promise<IOperacion>;
 }
 
 export interface IPermisoService extends IService {
+    search(permiso: string): Promise<IPermiso[]>;
     permisoStatus(permiso: string, id?: number): Promise<IConflictResponse>;
 }
 
 export interface IProfesorService extends IService {
+    search(options: { nombre: string; email: string }): Promise<IProfesor[]>;
     profesorStatus(email: string, id?: number): Promise<IConflictResponse>;
 }
 
 export interface IRolService extends IService {
+    search(rol: string): Promise<IRol[]>;
     rolStatus(rol: string, id?: number): Promise<IConflictResponse>;
 }
 
-export interface ITareaService extends IService {}
+export interface ITareaService extends IService {
+    search(titulo: string): Promise<ITarea[]>;
+}
 
 export interface IUsuarioService extends IService {
+    search(options: { username: string; email: string }): Promise<IUsuario[]>;
     usernameTaked(username: string): Promise<boolean>;
     emailUsed(email: string): Promise<boolean>;
     usuarioStatus(
