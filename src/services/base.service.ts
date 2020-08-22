@@ -1,5 +1,6 @@
 import { Repository } from "typeorm";
 import { injectable, unmanaged } from "inversify";
+import { INotFoundResponse } from "../constants/interfaces";
 
 export interface BaseServiceOptParam {
     useSoftDeletes: boolean;
@@ -34,5 +35,18 @@ export abstract class BaseService {
             return this._repository.softDelete(id);
         }
         return this._repository.delete(id);
+    }
+    async existe(id: number): Promise<INotFoundResponse> {
+        const existe = await this._repository
+            .createQueryBuilder("Recurso")
+            .where("Recurso.id= :id", { id })
+            .getOne();
+        return {
+            notFound: !existe,
+            notFoundData: {
+                name: "Not found",
+                message: "Recurso no encontrado.",
+            },
+        };
     }
 }
