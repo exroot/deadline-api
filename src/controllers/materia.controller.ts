@@ -183,7 +183,7 @@ export class MateriaController extends BaseHttpController {
     private async validateInput(data: any): Promise<IValidationResponse> {
         let response: any = null;
         await this._schema
-            .validate(data, { abortEarly: false })
+            .validate(data, { abortEarly: false, strict: true })
             .catch((errors) => (response = errors));
         return {
             error: !!response,

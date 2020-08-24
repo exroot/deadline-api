@@ -12,7 +12,11 @@ import {
     queryParam,
     BaseHttpController,
 } from "inversify-express-utils";
-import { ITarea, ITareaService } from "../constants/interfaces";
+import {
+    ITarea,
+    ITareaService,
+    IValidationResponse,
+} from "../constants/interfaces";
 import { Schema } from "yup";
 import { TYPE } from "../constants/types";
 import { inject } from "inversify";
@@ -44,16 +48,13 @@ export class TareaController extends BaseHttpController {
     ) {
         const tareaId = parseInt(id);
         try {
-            const content = await this._service.get(tareaId);
-            if (!content) {
-                return this.json(
-                    {
-                        code: "Not found",
-                        message: "No se ha encontrado el recurso.",
-                    },
-                    404
-                );
+            const { notFound, notFoundData } = await this._service.existe(
+                tareaId
+            );
+            if (notFound) {
+                return this.json(notFoundData, 404);
             }
+            const content = await this._service.get(tareaId);
             return this.json(content, 200);
         } catch (err) {
             next(err);
@@ -94,15 +95,9 @@ export class TareaController extends BaseHttpController {
         @next() next: NextFunction
     ) {
         try {
-            let errors: any = null;
-            await this._schema
-                .validate(newData, { abortEarly: false })
-                .catch((err) => (errors = err));
-            if (errors) {
-                return this.json(
-                    { code: "Unprocessable Entity", message: errors },
-                    422
-                );
+            const { error, errorData } = await this.validateInput(newData);
+            if (error) {
+                return this.json(errorData, 422);
             }
             const content = await this._service.create(newData);
             return this.json(content, 201);
@@ -125,25 +120,15 @@ export class TareaController extends BaseHttpController {
     ) {
         const tareaId = parseInt(id);
         try {
-            const existe = await this._service.existe(tareaId);
-            if (!existe) {
-                return this.json(
-                    {
-                        code: "Not found",
-                        message: "No se ha encontrado el recurso.",
-                    },
-                    404
-                );
+            const { notFound, notFoundData } = await this._service.existe(
+                tareaId
+            );
+            if (notFound) {
+                return this.json(notFoundData, 404);
             }
-            let errors: any = null;
-            await this._schema
-                .validate(updatedData, { abortEarly: false })
-                .catch((err) => (errors = err));
-            if (errors) {
-                return this.json(
-                    { code: "Unprocessable Entity", message: errors },
-                    422
-                );
+            const { error, errorData } = await this.validateInput(updatedData);
+            if (error) {
+                return this.json(errorData, 422);
             }
             await this._service.update(tareaId, updatedData);
             return this.ok();
@@ -165,20 +150,29 @@ export class TareaController extends BaseHttpController {
     ) {
         const tareaId = parseInt(id);
         try {
-            const existe = await this._service.existe(tareaId);
-            if (!existe) {
-                return this.json(
-                    {
-                        code: "Not found",
-                        message: "No se ha encontrado el recurso.",
-                    },
-                    404
-                );
+            const { notFound, notFoundData } = await this._service.existe(
+                tareaId
+            );
+            if (notFound) {
+                return this.json(notFoundData, 404);
             }
             await this._service.delete(tareaId);
             return this.ok();
         } catch (err) {
             next(err);
         }
+    }
+    private async validateInput(data: any): Promise<IValidationResponse> {
+        let response: any = null;
+        await this._schema
+            .validate(data, { abortEarly: false, strict: true })
+            .catch((errors) => (response = errors));
+        return {
+            error: !!response,
+            errorData: {
+                name: response?.name,
+                errors: response?.errors,
+            },
+        };
     }
 }
