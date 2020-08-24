@@ -25,7 +25,8 @@ export abstract class BaseService {
         orderBy: string
     ): Promise<any[]>;
     async create(newData: any): Promise<any> {
-        return this._repository.save(newData);
+        const { deletedAt, ...created } = await this._repository.save(newData);
+        return created;
     }
     async update(id: number, updatedData: any): Promise<any> {
         return this._repository.update(id, updatedData);

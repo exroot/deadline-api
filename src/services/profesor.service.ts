@@ -7,6 +7,7 @@ import { BaseService } from "./base.service";
 type OrderBy = "ASC" | "DESC" | 1 | -1;
 
 export class ProfesorService extends BaseService {
+    private readonly _sortableColumns: string[];
     private readonly _relations: string[];
     constructor(
         @inject(TYPE.ProfesorRepository)
@@ -14,6 +15,7 @@ export class ProfesorService extends BaseService {
     ) {
         super(profesorRepository, { useSoftDeletes: true });
         this._relations = ["materias"];
+        this._sortableColumns = ["id", "nombre"];
     }
     get(id: number): Promise<IProfesor> {
         return this._repository.findOne(id, {
@@ -26,6 +28,9 @@ export class ProfesorService extends BaseService {
         sortBy: string,
         orderBy: string
     ): Promise<IProfesor[]> {
+        if (!this._sortableColumns.includes(sortBy)) {
+            sortBy = "id";
+        }
         return this._repository.find({
             relations: this._relations,
             order: {

@@ -7,11 +7,13 @@ import { BaseService } from "./base.service";
 type OrderBy = "ASC" | "DESC" | 1 | -1;
 
 export class OperacionService extends BaseService {
+    private readonly _sortableColumns: string[];
     constructor(
         @inject(TYPE.OperacionRepository)
         operacionRepository: Repository<IOperacion>
     ) {
         super(operacionRepository, { useSoftDeletes: true });
+        this._sortableColumns = ["id", "operacion"];
     }
     get(id: number): Promise<IOperacion> {
         return this._repository.findOne(id);
@@ -22,6 +24,9 @@ export class OperacionService extends BaseService {
         sortBy: string,
         orderBy: string
     ): Promise<IOperacion[]> {
+        if (!this._sortableColumns.includes(sortBy)) {
+            sortBy = "id";
+        }
         return this._repository.find({
             order: {
                 [sortBy]: orderBy as OrderBy,

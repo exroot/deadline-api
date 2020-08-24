@@ -7,16 +7,15 @@ import { TYPE } from "../constants/types";
 type OrderBy = "ASC" | "DESC" | 1 | -1;
 
 export class CarreraService extends BaseService {
-    private readonly _relations: string[];
+    private readonly _sortableColumns: string[];
     constructor(
         @inject(TYPE.CarreraRepository) carreraRepo: Repository<ICarrera>
     ) {
         super(carreraRepo, { useSoftDeletes: false });
+        this._sortableColumns = ["id", "carrera"];
     }
     get(id: number): Promise<ICarrera> {
-        return this._repository.findOne(id, {
-            relations: this._relations,
-        });
+        return this._repository.findOne(id);
     }
     getMany(
         page: number,
@@ -24,6 +23,9 @@ export class CarreraService extends BaseService {
         sortBy: string,
         orderBy: string
     ): Promise<ICarrera[]> {
+        if (!this._sortableColumns.includes(sortBy)) {
+            sortBy = "id";
+        }
         return this._repository.find({
             order: {
                 [sortBy]: orderBy as OrderBy,

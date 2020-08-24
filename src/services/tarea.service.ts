@@ -7,10 +7,12 @@ import { TYPE } from "../constants/types";
 type OrderBy = "ASC" | "DESC" | 1 | -1;
 
 export class TareaService extends BaseService {
+    private readonly _sortableColumns: string[];
     private readonly _relations: string[];
     constructor(@inject(TYPE.TareaRepository) tareaRepo: Repository<ITarea>) {
         super(tareaRepo, { useSoftDeletes: true });
         this._relations = ["autor", "materia", "profesor", "categorias"];
+        this._sortableColumns = ["id", "titulo", "materia", "profesor"];
     }
     get(id: number): Promise<any> {
         return this._repository.findOne(id, {
@@ -23,6 +25,9 @@ export class TareaService extends BaseService {
         sortBy: string,
         orderBy: string
     ): Promise<any[]> {
+        if (!this._sortableColumns.includes(sortBy)) {
+            sortBy = "id";
+        }
         return this._repository.find({
             order: {
                 [sortBy]: orderBy as OrderBy,

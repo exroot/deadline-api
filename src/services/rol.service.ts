@@ -7,12 +7,14 @@ import { BaseService } from "./base.service";
 type OrderBy = "ASC" | "DESC" | 1 | -1;
 
 export class RolService extends BaseService {
+    private readonly _sortableColumns: string[];
     private readonly _relations: string[];
     constructor(
         @inject(TYPE.RolRepository)
         rolRepository: Repository<IRol>
     ) {
         super(rolRepository, { useSoftDeletes: true });
+        this._sortableColumns = ["id", "rol"];
         this._relations = ["permisos"];
     }
     get(id: number): Promise<IRol> {
@@ -26,6 +28,9 @@ export class RolService extends BaseService {
         sortBy: string,
         orderBy: string
     ): Promise<IRol[]> {
+        if (!this._sortableColumns.includes(sortBy)) {
+            sortBy = "id";
+        }
         return this._repository.find({
             relations: this._relations,
             order: {

@@ -1,18 +1,27 @@
 import { inject, injectable } from "inversify";
 import { TYPE } from "../constants/types";
 import { IBitacora, INotFoundResponse } from "../constants/interfaces";
-import { Repository, Between, Like } from "typeorm";
+import { Repository, Between } from "typeorm";
+
+type OrderBy = "ASC" | "DESC";
 
 @injectable()
 export class BitacoraService {
     protected readonly _repository: Repository<IBitacora>;
     private readonly _relations: string[];
+    private readonly _sortableColumns: string[];
     constructor(
         @inject(TYPE.BitacoraRepository)
         bitacoraRepository: Repository<IBitacora>
     ) {
         this._repository = bitacoraRepository;
         this._relations = ["usuario", "operacion", "recurso"];
+        this._sortableColumns = [
+            "usuario",
+            "operacion",
+            "recurso",
+            "timestamp",
+        ];
     }
     get(id: number): Promise<IBitacora> {
         return this._repository.findOne(id, {
@@ -25,14 +34,25 @@ export class BitacoraService {
         sortBy: string,
         orderBy: string
     ): Promise<IBitacora[]> {
-        return this._repository.find({
-            relations: this._relations,
-            order: {
-                [sortBy]: orderBy,
-            },
-            take: limit,
-            skip: page * limit - limit,
-        });
+        if (!this._sortableColumns.includes(sortBy)) {
+            sortBy = "Bitacora.timestamp";
+        }
+        if (sortBy === "usuario") {
+            sortBy += ".username";
+        } else if (sortBy === "operacion") {
+            sortBy += ".operacion";
+        } else if (sortBy === "recurso") {
+            sortBy += ".nombre";
+        }
+        return this._repository
+            .createQueryBuilder("Bitacora")
+            .leftJoinAndSelect("Bitacora.usuario", "usuario")
+            .leftJoinAndSelect("Bitacora.operacion", "operacion")
+            .leftJoinAndSelect("Bitacora.recurso", "recurso")
+            .orderBy(sortBy, orderBy as OrderBy)
+            .take(limit)
+            .skip(page * limit - limit)
+            .getMany();
     }
     getManyByUsuario(
         usuarioId: number,

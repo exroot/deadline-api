@@ -8,11 +8,13 @@ import { AnyCnameRecord } from "dns";
 type OrderBy = "ASC" | "DESC" | 1 | -1;
 
 export class RecursoService extends BaseService {
+    private readonly _sortableColumns: string[];
     constructor(
         @inject(TYPE.RecursoRepository)
         recursoReposiotry: Repository<IRecurso>
     ) {
         super(recursoReposiotry, { useSoftDeletes: true });
+        this._sortableColumns = ["id", "nombre"];
     }
     get(id: number): Promise<IRecurso> {
         return this._repository.findOne(id);
@@ -23,6 +25,9 @@ export class RecursoService extends BaseService {
         sortBy: string,
         orderBy: string
     ): Promise<IRecurso[]> {
+        if (!this._sortableColumns.includes(sortBy)) {
+            sortBy = "id";
+        }
         return this._repository.find({
             order: {
                 [sortBy]: orderBy as OrderBy,

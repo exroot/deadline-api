@@ -7,11 +7,13 @@ import { TYPE } from "../constants/types";
 type OrderBy = "ASC" | "DESC" | 1 | -1;
 
 export class UsuarioService extends BaseService {
+    private readonly _sortableColumns: string[];
     private readonly _relations: string[];
     constructor(
         @inject(TYPE.UsuarioRepository) usuarioRepo: Repository<IUsuario>
     ) {
         super(usuarioRepo, { useSoftDeletes: true });
+        this._sortableColumns = ["rol", "carrera"];
         this._relations = ["carrera", "rol", "rol.permisos"];
     }
     get(id: number): Promise<any> {
@@ -25,6 +27,9 @@ export class UsuarioService extends BaseService {
         sortBy: string,
         orderBy: string
     ): Promise<any[]> {
+        if (!this._sortableColumns.includes(sortBy)) {
+            sortBy = "id";
+        }
         return this._repository.find({
             relations: this._relations,
             order: {
