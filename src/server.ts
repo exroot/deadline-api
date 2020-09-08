@@ -1,4 +1,4 @@
-import { Application } from "express";
+import express, { Application } from "express";
 import { bindings } from "./inversify.config";
 import { Container } from "inversify";
 import rateLimiter, { RateLimit } from "express-rate-limit";
@@ -9,6 +9,7 @@ import dotenv from "dotenv";
 import "reflect-metadata";
 
 export class Server {
+    protected express: Application;
     protected server: Application;
     protected PORT: number;
     protected apiRateLimiter: RateLimit;
@@ -19,9 +20,11 @@ export class Server {
             max: 1000,
             windowMs: 15 * 60 * 1000 /* 15 minutes */,
         });
+        this.express = express();
     }
     public async setup(): Promise<void> {
         dotenv.config();
+        this.setMiddlewares(this.express);
         await this.setContainer();
         const server = new InversifyExpressServer(
             this.container,
@@ -29,12 +32,9 @@ export class Server {
             {
                 rootPath: "/api/v1",
             },
-            null,
+            this.express,
             AuthProvider
         );
-        server.setConfig((app) => {
-            this.setMiddlewares(app);
-        });
         server.setErrorConfig((app) => {
             this.setErrorHandlers(app);
         });

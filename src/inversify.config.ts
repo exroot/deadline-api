@@ -3,12 +3,12 @@ import { BaseMiddleware } from "inversify-express-utils";
 import { Repository, getRepository } from "typeorm";
 import { entities } from "./entities";
 import { customMiddlewares as middlewares } from "./middlewares";
+import { extractData } from "./helpers/routeParser";
 import { services } from "./services";
 import { Schema } from "yup";
 import { schemas } from "./constants/schemas";
 import { TYPE } from "./constants/types";
 import { getDbConnection } from "./db";
-
 export const bindings = new AsyncContainerModule(async (bind) => {
     try {
         await getDbConnection();
@@ -26,6 +26,9 @@ export const bindings = new AsyncContainerModule(async (bind) => {
         schemas.forEach(({ schema, typename }) => {
             bind<Schema<any>>(TYPE[`${typename}`]).toConstantValue(schema);
         });
+
+        /* Registering helpers */
+        bind<any>(TYPE.RouteParserHelper).toConstantValue(extractData);
 
         /* Registering controllers */
         console.log(`Registering controllers...`);
