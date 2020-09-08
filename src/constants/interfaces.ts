@@ -122,7 +122,7 @@ export interface IService {
 }
 
 export interface IAuthService extends IService {
-    makeToken(identifier: string): Promise<string>;
+    makeToken(identifier: string): Promise<any>;
     getUser(token: string): Promise<IUsuario>;
     validCredentials(credentials: ICredentials): Promise<boolean>;
     register(data: IUsuario): Promise<any>;
@@ -222,6 +222,7 @@ export interface IUsuarioService extends IService {
 export interface ICredentials {
     username?: string;
     email?: string;
+    identifier?: string;
     password: string;
 }
 
