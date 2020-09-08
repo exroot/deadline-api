@@ -28,14 +28,14 @@ export class AuthService {
         return usuario !== undefined;
     }
     async validCredentials(credentials: ICredentials): Promise<boolean> {
-        const { password, ...identifier } = credentials;
+        const { password, identifier } = credentials;
         let usuario = await this._usuarioRepository.findOne({
             where: [
                 {
-                    username: identifier.username,
+                    username: identifier,
                 },
                 {
-                    email: identifier.email,
+                    email: identifier,
                 },
             ],
             select: ["id", "username", "email", "password"],
