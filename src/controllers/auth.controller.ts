@@ -5,10 +5,16 @@ import {
     response,
     next,
     httpPost,
+    httpGet,
     requestBody,
 } from "inversify-express-utils";
 import { Request, Response, NextFunction } from "express";
-import { ICredentials, IAuthService, IUsuario } from "../constants/interfaces";
+import {
+    ICredentials,
+    IAuthService,
+    IUsuario,
+    IUsuarioService,
+} from "../constants/interfaces";
 import { Schema } from "yup";
 import { TYPE } from "../constants/types";
 import { inject } from "inversify";
@@ -17,8 +23,26 @@ import { inject } from "inversify";
 export class AuthController extends BaseHttpController {
     @inject(TYPE.AuthService)
     private readonly _authService: IAuthService;
+    @inject(TYPE.UsuarioService)
+    private readonly _usuarioService: IUsuarioService;
     @inject(TYPE.UsuarioSchema)
     private readonly _usuarioSchema: Schema<any>;
+
+    @httpGet("/me", TYPE.Authenticated)
+    public async me(
+        @request() req: Request,
+        @response() res: Response,
+        @requestBody() data: IUsuario,
+        @next() next: NextFunction
+    ) {
+        const userID = this.httpContext.user.details.usuario_id;
+        try {
+            const usuario = await this._usuarioService.get(parseInt(userID));
+            return this.json(usuario, 200);
+        } catch (err) {
+            next(err);
+        }
+    }
 
     @httpPost("/login")
     public async login(
@@ -28,7 +52,7 @@ export class AuthController extends BaseHttpController {
         @next() next: NextFunction
     ) {
         try {
-            if (!credentials.email && !credentials.username) {
+            if (!credentials.identifier) {
                 return this.json(
                     {
                         code: "Bad request",
@@ -38,7 +62,7 @@ export class AuthController extends BaseHttpController {
                 );
             }
             const registered = await this._authService.registered(
-                credentials.email || credentials.username
+                credentials.identifier
             );
             if (!registered) {
                 return this.json(
@@ -63,9 +87,17 @@ export class AuthController extends BaseHttpController {
                 );
             }
             const token = await this._authService.makeToken(
-                credentials.email || credentials.username
+                credentials.identifier
             );
-            return this.json(token, 200);
+            return res
+                .cookie("Authorization", token.accessToken, {
+                    httpOnly: false,
+                    sameSite: true,
+                    maxAge: 3600000,
+                })
+                .status(200)
+                .json(token);
+            // return this.json(token, 200);
         } catch (err) {
             next(err);
         }

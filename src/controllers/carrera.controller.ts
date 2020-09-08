@@ -64,9 +64,6 @@ export class CarreraController extends BaseHttpController {
     }
     @httpGet(
         "/",
-        TYPE.Authenticated,
-        TYPE.Authorized,
-        TYPE.AuditMiddleware,
         TYPE.PaginationMiddleware
     )
     public async getMany(

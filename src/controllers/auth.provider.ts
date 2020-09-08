@@ -7,12 +7,16 @@ import { IAuthService } from "../constants/interfaces";
 
 @injectable()
 export class AuthProvider implements interfaces.AuthProvider {
-    @inject(TYPE.AuthService) private readonly _authService: IAuthService;
+  @inject(TYPE.AuthService) private readonly _authService: IAuthService;
 
-    public async getUser(req: Request, res: Response, next: NextFunction) {
-        const token = req.headers["authorization"];
-        const user = await this._authService.getUser(token);
-        const principal = new Principal(user);
-        return principal;
+  public async getUser(req: Request, res: Response, next: NextFunction) {
+    let token = req.cookies?.Authorization || null;
+
+    if (token === null) {
+      token = req.headers["Authorization"];
     }
+    const user = await this._authService.getUser(token);
+    const principal = new Principal(user);
+    return principal;
+  }
 }
